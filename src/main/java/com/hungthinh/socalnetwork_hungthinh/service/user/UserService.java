@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -20,14 +18,19 @@ public class UserService implements IUserService {
 
     @Override
     public String register(RegisterRequest request) {
-        Optional<User> user = userRepository.findByUsername(request.getUsername());
-
-        if (user.isPresent()) {
-            throw new AlreadyExistsException("Nguười dùng đã tồn tại");
+        // Kiểm tra username đã tồn tại chưa
+        if (userRepository.existsByUsername((request.getUsername()))){
+            throw new AlreadyExistsException("Username đã tồn tại");
         }
 
-        User entity = modelMapper.map(request, User.class);
+        // Kiểm tra email đã tồn tại chưa
+        if (userRepository.existsByEmail((request.getEmail()))) {
+            throw new AlreadyExistsException("Email đã tồn tại");
+        }
 
-        return "";
+        // Nếu không bị trùng, tiếp tục tạo user
+        User user = modelMapper.map(request, User.class);
+        userRepository.save(user);
+        return "Đăng ký thành công";
     }
 }

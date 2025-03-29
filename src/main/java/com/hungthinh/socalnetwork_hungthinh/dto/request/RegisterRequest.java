@@ -1,5 +1,6 @@
 package com.hungthinh.socalnetwork_hungthinh.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,11 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class RegisterRequest {
     @NotBlank(message = "Required name")
-    private String name;
+    private String fullName;
+
+    @NotBlank(message = "Required email")
+    @Email(message = "Email không đúng định dạng")
+    private String email;
 
     @NotBlank(message = "Required username")
     private String username;
