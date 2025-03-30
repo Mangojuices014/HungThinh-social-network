@@ -48,11 +48,10 @@ public class User {
     @OneToMany(mappedBy = "recipientUser")
     private Set<Message> MessagesReceived;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
 //    @OneToMany(mappedBy = "user")
@@ -61,5 +60,12 @@ public class User {
 //
 //    @OneToMany(mappedBy = "user")
 //    private Set<UserLikePost> userLikePost;
+
+    public User(String fullName, String username, String password, Instant lastActive) {
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.lastActive = lastActive;
+    }
 
 }

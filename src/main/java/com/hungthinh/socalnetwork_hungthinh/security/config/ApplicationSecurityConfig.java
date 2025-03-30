@@ -33,8 +33,9 @@ public class ApplicationSecurityConfig {
 
 
     private static final List<String> SECURED_URLS = List.of(
-            "/api/v1/messages/**",
-            "/api/v1/users/**");
+//            "/api/v1/messages/**"
+//            "/api/v1/users/**"
+    );
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -4,5 +4,4 @@ import com.hungthinh.socalnetwork_hungthinh.dto.request.RegisterRequest;
 
 public interface IUserService {
     String register(RegisterRequest request);
-    String login(LoginRequest request);
 }
