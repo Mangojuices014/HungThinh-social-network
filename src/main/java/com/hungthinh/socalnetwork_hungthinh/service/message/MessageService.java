@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,29 +27,31 @@ public class MessageService implements IMessageService {
 
 
     @Override
-    public List<MessageResponse> getMessages(String senderUsername, String recipientUsername) {
-        List<Message> messages = messageRepository.getMessages(senderUsername, recipientUsername);
+    public List<MessageResponse> getMessages(String sender, String recipient) {
+        User user = userRepository.findByUsername(recipient)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        List<Message> messages = messageRepository.getMessages(sender, user.getUsername());
         return messages.stream()
                 .map(msg -> modelMapper.map(msg, MessageResponse.class))
                 .toList();
     }
 
     @Override
-    public MessageResponse addMessage(MessageSendRequest msg, String senderUsername) {
+    public MessageResponse addMessage(MessageSendRequest msg, String sender) {
         User recipientUser = userRepository.findByUsername(msg.getRecipientUsername())
                 .orElseThrow(() -> {
                     logger.error("Recipient Username not found: {}", msg.getRecipientUsername());
                     return new ResourceNotFoundException("Recipient Username not found: " + msg.getRecipientUsername());
                 });
 
-        User senderUser = userRepository.findByUsername(senderUsername)
+        User senderUser = userRepository.findByUsername(sender)
                 .orElseThrow(() -> {
-                    logger.error("Sender Username not found: {}", senderUsername);
-                    return new ResourceNotFoundException("Sender username not found: " + senderUsername);
+                    logger.error("Sender Username not found: {}", sender);
+                    return new ResourceNotFoundException("Sender username not found: " + sender);
                 });
 
         Message message = new Message();
-        message.setSenderUsername(senderUsername);
+        message.setSenderUsername(sender);
         message.setRecipientUsername(msg.getRecipientUsername());
         message.setContent(HtmlUtils.htmlEscape(msg.getContent()));
         message.setCreatedDate(Instant.now());
