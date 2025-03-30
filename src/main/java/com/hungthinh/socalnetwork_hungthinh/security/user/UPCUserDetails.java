@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UPCUserDetails implements UserDetails {
-    private Long id;
+    private String id;
     private String email;
     private String password;
 
