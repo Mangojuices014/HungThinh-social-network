@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -54,5 +56,9 @@ public class UserService implements IUserService {
         return "Đăng ký thành công";
     }
 
+    @Override
+    public Optional<User> findByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 
 }
