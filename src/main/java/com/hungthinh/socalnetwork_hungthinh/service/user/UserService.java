@@ -1,5 +1,6 @@
 package com.hungthinh.socalnetwork_hungthinh.service.user;
 
+import com.hungthinh.socalnetwork_hungthinh.dto.request.LoginRequest;
 import com.hungthinh.socalnetwork_hungthinh.dto.request.RegisterRequest;
 import com.hungthinh.socalnetwork_hungthinh.exception.AlreadyExistsException;
 import com.hungthinh.socalnetwork_hungthinh.model.User;
@@ -33,4 +34,10 @@ public class UserService implements IUserService {
         userRepository.save(user);
         return "Đăng ký thành công";
     }
+
+    @Override
+    public String login(LoginRequest request) {
+        return "";
+    }
+
 }
