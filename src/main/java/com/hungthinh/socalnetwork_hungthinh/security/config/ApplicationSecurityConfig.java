@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -64,15 +65,43 @@ public class ApplicationSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)  
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->auth.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
-                        .anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll() // Cho phép WebSocket kết nối
+                        .requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
+                        .anyRequest().permitAll()
+                );
+
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
+
+
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.csrf(AbstractHttpConfigurer::disable)
+//                .cors(Customizer.withDefaults())
+//                .authorizeHttpRequests(((authorized) ->{
+//                    //authorized.requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN");
+//                    authorized.requestMatchers("/api/users/**").permitAll();
+//                    authorized.requestMatchers("/api/messages/**").permitAll();
+//                    authorized.requestMatchers("/ws/**").permitAll();
+//                    //authorized.requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER");
+//
+//                    authorized.anyRequest().authenticated();
+//
+//                })).httpBasic(Customizer.withDefaults());
+//
+//        http.exceptionHandling( exception -> exception.authenticationEntryPoint(authEntryPoint));
+//
+//        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {

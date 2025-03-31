@@ -1,10 +1,7 @@
 package com.hungthinh.socalnetwork_hungthinh.security.user;
 
 import com.hungthinh.socalnetwork_hungthinh.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,9 +16,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UPCUserDetails implements UserDetails {
     private String id;
+    private String username;  // ✅ Thêm username
     private String email;
     private String password;
-
     private Collection<GrantedAuthority> authorities;
 
     public static UPCUserDetails buildUserDetails(User user) {
@@ -31,6 +28,7 @@ public class UPCUserDetails implements UserDetails {
                 .collect(Collectors.toList());
         return new UPCUserDetails(
                 user.getId(),
+                user.getUsername(),  // ✅ Lấy username từ User
                 user.getEmail(),
                 user.getPassword(),
                 authorities);
@@ -48,7 +46,7 @@ public class UPCUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;  // ✅ Không để trống nữa
     }
 
     @Override
@@ -63,6 +61,11 @@ public class UPCUserDetails implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
         return true;
     }
 }
